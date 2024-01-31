@@ -9,4 +9,7 @@ public class Utils {
         config.setProperty(key, value);
         config.save();
     }
+    public static int generateRandomId(int min, int max){
+        return (int) (Math.random()*(max-min)+min);
+    }
 }
