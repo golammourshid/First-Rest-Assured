@@ -12,6 +12,8 @@ import setup.Setup;
 import java.io.IOException;
 
 import static io.restassured.RestAssured.given;
+import static utils.Utils.saveEnvVar;
+//import static utils.Utils.saveEnvVar;
 
 public class User extends Setup {
     public User() throws IOException {
@@ -47,9 +49,24 @@ public class User extends Setup {
         String name = jsonObj.get("name");
         System.out.println(name);
     }
-    public void saveEnvVar(String key, String value) throws ConfigurationException {
-        PropertiesConfiguration config = new PropertiesConfiguration("./src/test/resources/config.properties");
-        config.setProperty(key, value);
-        config.save();
+    public void createUser(String email, String password) throws ConfigurationException, IOException {
+        RestAssured.baseURI = prop.getProperty("baseUrl");
+        UserModel userModel = new UserModel();
+        userModel.setEmail(email);
+        userModel.setPassword(password);
+        Response res =
+                given()
+                        .contentType("application/json")
+                        .body(userModel)
+                        .when()
+                        .post("/user/login")
+                        .then()
+                        .assertThat().statusCode(200).extract().response();
+//        System.out.println(res.asPrettyString());
+
+        JsonPath jsonObj = res.jsonPath();
+        String token = jsonObj.get("token");
+        System.out.println(token);
+        saveEnvVar("token", token);
     }
 }
