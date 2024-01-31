@@ -1,6 +1,7 @@
 package testrunner;
 
 import controller.User;
+import io.restassured.path.json.JsonPath;
 import org.apache.commons.configuration.ConfigurationException;
 import org.testng.annotations.Test;
 
@@ -12,9 +13,16 @@ public class UserTestRunner {
         User user = new User();
         user.doLogin("salman@roadtocareer.net", "1234");
     }
-//    @Test(priority = 2, description = "Should get user info")
+    @Test(priority = 2, description = "Created New User")
+    public void createNewUser() throws IOException, ConfigurationException {
+        User user = new User();
+        JsonPath jsonObj = user.createUser("Antor", "antor@gmail.com", "123456", "01521413600", "1234567", "admin");
+        String msg = jsonObj.get("message");
+        System.out.println(msg);
+    }
+    @Test(priority = 3, description = "Should get user info")
     public void getUserInfo() throws IOException {
         User user = new User();
-        user.getUserInfo();
+        user.getUserInfo("45711");
     }
 }
