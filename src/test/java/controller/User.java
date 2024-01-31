@@ -3,6 +3,7 @@ package controller;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import model.UserModel;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.testng.annotations.Test;
@@ -16,15 +17,15 @@ public class User extends Setup {
     public User() throws IOException {
         initConfig();
     }
-    public void doLogin() throws ConfigurationException, IOException {
+    public void doLogin(String email, String password) throws ConfigurationException, IOException {
         RestAssured.baseURI = prop.getProperty("baseUrl");
+        UserModel userModel = new UserModel();
+        userModel.setEmail(email);
+        userModel.setPassword(password);
         Response res =
                 given()
                         .contentType("application/json")
-                        .body("{\n" +
-                                "\t\"email\":\"salman@roadtocareer.net\",\n" +
-                                "\t\"password\":\"1234\"\n" +
-                                "}")
+                        .body(userModel)
                         .when()
                         .post("/user/login")
                         .then()
